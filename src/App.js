@@ -15,10 +15,24 @@ const reducer = (state, action) => {
 const App = () => {
   const [counter, setCounter] = useState(0);
   const [stringResult, setStringResult] = useState('');
+  const [page, setPage] = useState(1);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const counterIncreaseHandler = () => {
     setCounter(counter + 1);
+  };
+
+  const increasePageHandler = () => {
+    if (page >= state.length / 3) {
+      return
+    }
+    setPage(page + 1);
+  };
+
+  const decreasePageHandler = () => {
+    if (page - 1 !== 0) {
+      setPage(page - 1);
+    }
   };
 
   const addUserHandler = () => {
@@ -70,15 +84,32 @@ const App = () => {
         User Data
         <button onClick={addUserHandler}>+</button>
       </h2>
-      {state.map(u => {
-        return (
-          <div key={u.id}>
-            <p>{u.user.firstName} {u.user.lastName}</p>
-            <img src={u.user.image} alt={`${u.user.firstName} ${u.user.lastName}`} />
-          </div>
-        )
-      })}
-    </div>
+      <div>
+        <button onClick={decreasePageHandler}>&lt;</button>
+        Page: {page}
+        <button onClick={increasePageHandler}>&gt;</button>
+      </div>
+      {
+        state.length < 4 ? state.map(u => {
+          return (
+            <div key={u.id}>
+              <p>{u.user.firstName} {u.user.lastName}</p>
+              <img src={u.user.image} alt={`${u.user.firstName} ${u.user.lastName}`} />
+            </div>
+          )
+        }) : ''
+      }
+      {
+        state.length >= 4 ? state.slice((3 * page - 3), (3 * page)).map(u => {
+          return (
+            <div key={u.id}>
+              <p>{u.user.firstName} {u.user.lastName}</p>
+              <img src={u.user.image} alt={`${u.user.firstName} ${u.user.lastName}`} />
+            </div>
+          )
+        }) : ''
+      }
+    </div >
   );
 }
 
